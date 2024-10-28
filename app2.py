@@ -18,7 +18,6 @@ def load_all_sheets(file_path):
     if 'Sl No.' in combined_df.columns:
         combined_df = combined_df.drop(columns=['Sl No.'])
     return combined_df
-
 def universal_fuzzy_filter(data, search_value, threshold=80):
     result = pd.DataFrame()
     
@@ -38,29 +37,14 @@ def universal_fuzzy_filter(data, search_value, threshold=80):
 def highlight_search(s, query):
     return ['background-color: yellow' if query.lower() in str(val).lower() else '' for val in s]
 
-st.set_page_config(page_title="LinkView360", layout="wide")
-
-st.sidebar.title("Login")
-username = st.sidebar.text_input("Username")
-password = st.sidebar.text_input("Password", type="password")
-
-correct_username = "admin"
-correct_password = "password123"
-
-# Check login
-if username == correct_username and password == correct_password:
-    st.sidebar.success("Login successful!")
-    
-    # File upload section on separate page
-    st.sidebar.title("File Upload")
-    uploaded_file = st.sidebar.file_uploader("Upload an Excel file", type=['xlsx'])
-    if uploaded_file is not None:
-        file_path = os.path.join(EXCEL_FOLDER, uploaded_file.name)
-        with open(file_path, 'wb') as f:
-            f.write(uploaded_file.getbuffer())
-        st.sidebar.success(f"File '{uploaded_file.name}' uploaded successfully!")
-
 st.title("LinkView360: Excel Search")
+uploaded_file = st.file_uploader("Upload an Excel file", type=['xlsx'])
+if uploaded_file is not None:
+    file_path = os.path.join(EXCEL_FOLDER, uploaded_file.name)
+    with open(file_path, 'wb') as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"File '{uploaded_file.name}' uploaded successfully!")
+
 excel_files = load_excel_files()
 
 file_choice = st.selectbox("Select an Excel file", excel_files)
@@ -77,7 +61,6 @@ if file_choice:
 
         if st.checkbox("Drop rows with missing values"):
             data = data.dropna()
-
         search_value = st.text_input("Enter a value to search (fuzzy matching across text columns only)")
         
         if search_value:
@@ -108,5 +91,3 @@ if file_choice:
             )
         if st.button("Reset Search"):
             st.experimental_rerun()
-else:
-    st.warning("Please login and upload an Excel file to proceed.")
