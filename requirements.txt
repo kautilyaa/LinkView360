@@ -8,3 +8,4 @@ fastapi
 pandas
 fuzzywuzzy
 uvicorn
+Pillow==9.2.0
