@@ -2,10 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+excel_folder/*
 # C extensions
 *.so
-
+/excess/*
+/Extra
 # Distribution / packaging
 .Python
 build/

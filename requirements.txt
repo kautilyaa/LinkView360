@@ -1,0 +1,10 @@
+
+streamlit==1.24.0
+pandas==2.0.3
+openpyxl==3.1.2
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.20.9  # for speedup in fuzzy matching
+fastapi
+pandas
+fuzzywuzzy
+uvicorn
