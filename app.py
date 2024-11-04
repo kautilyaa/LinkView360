@@ -22,21 +22,33 @@ def load_all_sheets(file_path):
 def universal_fuzzy_filter(data, search_value, threshold=80):
     result = pd.DataFrame()
     
+    # Ensure search_value is a string
+    search_value = str(search_value) if search_value else ""
+    
     for column in data.select_dtypes(include=['object', 'string']).columns:
-        column_data = data[column].dropna()  
-        matched_values = process.extract(search_value, column_data.unique(), limit=len(column_data), scorer=fuzz.partial_ratio)
+        column_data = data[column].dropna().astype(str)  # Convert all values to strings and drop NaNs
+        matched_values = process.extract(
+            search_value, column_data.unique(), limit=len(column_data), scorer=fuzz.partial_ratio
+        )
+        
+        # Filter matched values based on threshold
         matched_values = [match[0] for match in matched_values if match[1] >= threshold]
         
+        # If there are no matches above the threshold, skip this column
         if not matched_values:
             continue
         
+        # Filter rows based on the matched values
         filtered = data[data[column].isin(matched_values)]
         result = pd.concat([result, filtered])
     
     return result.drop_duplicates()
 
+
 def highlight_search(s, query):
-    return ['background-color: yellow' if query.lower() in str(val).lower() else '' for val in s]
+    query = str(query).lower()  # Convert query to lowercase string
+    return ['background-color: yellow' if query in str(val).lower() else '' for val in s]
+
 
 st.set_page_config(page_title="LinkView360", layout="wide")
 
